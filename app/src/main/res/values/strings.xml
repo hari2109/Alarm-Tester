@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Alarm Manager</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_send_log">Send Log</string>
+    <string name="choose_an_option">Choose an option:</string>
+    <string name="trigger_specific_time">Trigger at specific time: %s</string>
+    <string name="alarm_status">Alarm status</string>
+    <string name="trigger_at_minutes">Trigger at every %d minutes</string>
+    <string name="reminder_message">This is a test alarm for specific time</string>
+    <string name="reminder_message_interval">This is a test alarm for interval based</string>
+    <string name="reminder">Reminder</string>
+    <string name="interval">Interval (in Minutes)</string>
+    <string name="battery_optimization">Battery Optimization</string>
+    <string name="reminder_mail_subject">Reminder App Log</string>
+    <string name="reminder_mail_body">Hi, \nPlease find the attached log of the alarm tester app</string>
+    <string name="choose_email_client">Choose an Email client</string>
+</resources>
