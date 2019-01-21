@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             if (!button.isPressed) return@setOnCheckedChangeListener
             if (!isChecked) {
                 Timber.d("Alarm disabled")
-                cancelAllAlarms()
+                AlarmUtils.cancelAllAlarms(this@MainActivity)
                 alarmPreference.setAlarmState(ALARM_DISABLED).commit()
             } else {
                 Timber.d("Alarm enabled")
@@ -99,11 +99,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun cancelAllAlarms() {
-        AlarmUtils.cancelAlarm(this, NOTIF_ID_SPECIFIC_TIME)
-        AlarmUtils.cancelAlarm(this, NOTIF_ID_INTERVAL_TIME)
     }
 
     private fun showMinuteList() {

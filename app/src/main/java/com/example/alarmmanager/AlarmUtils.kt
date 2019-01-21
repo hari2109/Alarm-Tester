@@ -20,7 +20,10 @@ object AlarmUtils {
 
     fun setAlarmsIfNeeded(context: Context, alarmPreference: AlarmPreference, forced: Boolean) {
         val alarmState = alarmPreference.getAlarmState()
-        if (ALARM_DISABLED == alarmState) return
+        if (ALARM_DISABLED == alarmState)  {
+            cancelAllAlarms(context)
+            return
+        }
 
         val calendar = Calendar.getInstance()
         when (alarmState) {
@@ -104,7 +107,12 @@ object AlarmUtils {
         }
     }
 
-    fun cancelAlarm(context: Context, id: Int) {
+    fun cancelAllAlarms(context: Context) {
+        AlarmUtils.cancelAlarm(context, NOTIF_ID_SPECIFIC_TIME)
+        AlarmUtils.cancelAlarm(context, NOTIF_ID_INTERVAL_TIME)
+    }
+
+    private fun cancelAlarm(context: Context, id: Int) {
         val intent = Intent(context, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getService(context, id, intent, 0)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
