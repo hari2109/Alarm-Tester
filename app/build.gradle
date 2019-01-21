@@ -5,14 +5,28 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    signingConfigs {
-        release {
-            keyAlias 'alarm test'
-            keyPassword 'rockhard'
-            storeFile file('alarm-keystore.jks')
-            storePassword 'alarmtest'
+
+    File signFile = rootProject.file('keystore.properties')
+    if (signFile.exists()) {
+        logger.warn('*********************')
+        logger.warn('Keystore File exists')
+        logger.warn('*********************')
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(signFile))
+        signingConfigs {
+            release {
+                storeFile rootProject.file(properties['STORE_FILE'])
+                storePassword properties['STORE_PASSWORD']
+                keyAlias properties['KEY_ALIAS']
+                keyPassword properties['KEY_PASSWORD']
+            }
         }
+    } else {
+        logger.warn('*********************')
+        logger.warn('Keystore File does not exist')
+        logger.warn('*********************')
     }
+
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.alarmmanager"
@@ -26,7 +40,10 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

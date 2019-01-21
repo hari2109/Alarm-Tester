@@ -25,11 +25,14 @@
         <activity android:name=".BatteryWebViewActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
         <receiver android:name=".AlarmReceiver"/>
-        <receiver android:name=".BootReceiver">
-            <action android:name="android.intent.action.BOOT_COMPLETED" />
-            <action android:name="android.intent.action.TIMEZONE_CHANGED" />
-            <action android:name="android.intent.action.TIME_SET" />
-            <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+        <receiver android:name=".BootReceiver"
+                  android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
+                <action android:name="android.intent.action.TIME_SET"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
         </receiver>
         <provider android:authorities="${applicationId}.com.example.alarmmanager.provider"
                   android:name=".provider.GenericFileProvider"

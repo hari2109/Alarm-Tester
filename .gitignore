@@ -95,4 +95,5 @@ Thumbs.db
 keystore.properties
 keystore.properties.bak
 alarm-keystore.jks
+healthifyme.keystore
 /build-cache/
