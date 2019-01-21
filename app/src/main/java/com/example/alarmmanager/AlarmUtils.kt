@@ -18,9 +18,32 @@ const val NOTIF_ID_INTERVAL_TIME = 1002
 
 object AlarmUtils {
 
-    fun setAlarmManager(context: Context, message: String,
-                        calendar: Calendar, interval: Long,
-                        notificationId: Int, forced: Boolean) {
+    fun setAlarmsIfNeeded(context: Context, alarmPreference: AlarmPreference, forced: Boolean) {
+        val alarmState = alarmPreference.getAlarmState()
+        if (ALARM_DISABLED == alarmState) return
+
+        val calendar = Calendar.getInstance()
+        when (alarmState) {
+            ALARM_SPECIFIC_TIME -> {
+                val timeInMillis = alarmPreference.getAlarmTriggerMillis()
+                if (timeInMillis == 0L) return
+                calendar.timeInMillis = timeInMillis
+                setAlarmManager(context, "This is a test alarm notification",
+                    calendar, 120 * 1000, NOTIF_ID_SPECIFIC_TIME, forced)
+            }
+
+            ALARM_INTERVAL_BASED -> {
+                val minutesInterval = alarmPreference.getAlarmIntervalMins()
+                if (minutesInterval == 0) return
+                setRepeatingAlarm(context, "This is a test alarm notification",
+                    calendar, minutesInterval * 60 * 1000L, NOTIF_ID_INTERVAL_TIME, forced)
+            }
+        }
+    }
+
+    private fun setAlarmManager(context: Context, message: String,
+                                calendar: Calendar, interval: Long,
+                                notificationId: Int, forced: Boolean) {
 
         if (isAlarmActive(context, notificationId, message, interval) && !forced) {
             Timber.d("Time based alarm already active")
@@ -55,9 +78,9 @@ object AlarmUtils {
         return PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE) != null
     }
 
-    fun setRepeatingAlarm(context: Context, message: String, initialCalendar: Calendar,
-                          interval: Long, notificationId: Int) {
-        if (isAlarmActive(context, notificationId, message, interval)) {
+    private fun setRepeatingAlarm(context: Context, message: String, initialCalendar: Calendar,
+                                  interval: Long, notificationId: Int, forced: Boolean) {
+        if (!forced && isAlarmActive(context, notificationId, message, interval)) {
             Timber.d("Interval based alarm already active")
             return
         }

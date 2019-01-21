@@ -4,15 +4,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.TimePickerDialog
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -22,18 +16,14 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
-import java.util.*
 import java.io.File
 import java.text.SimpleDateFormat
-
-private const val STORAGE_REQ_CODE = 2000
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var alarmPreference: AlarmPreference
     private var timerDialog: TimePickerDialog? = null
-    private val STORAGE_PERMISSION = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-    private var isStoragePermissionGranted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,27 +56,12 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_send_log -> {
+                Timber.d("Send feedback clicked")
+                openFeedbackMail()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == STORAGE_REQ_CODE) {
-            checkForStoragePermission()
-        }
-    }
-
-    private fun checkForStoragePermission() {
-        if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, STORAGE_PERMISSION)) {
-            isStoragePermissionGranted = true
-            return
-        }
-
-        //request permission
-        ActivityCompat.requestPermissions(this, arrayOf(STORAGE_PERMISSION), STORAGE_REQ_CODE)
     }
 
     private fun setUpNotifChannel() {
@@ -136,14 +111,14 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(R.string.interval)
             .setItems(array) { _, selectedIndex ->
-                Timber.d("Interval alarm selected")
                 val selectedInterval = array[selectedIndex].toInt()
+                Timber.d("Interval alarm selected. Interval: $selectedInterval minutes")
                 alarmPreference.setAlarmState(ALARM_INTERVAL_BASED)
                     .setAlarmIntervalMins(selectedInterval)
                     .commit()
 
                 rb_trigger_interval.text = getString(R.string.trigger_at_minutes, selectedInterval)
-                setAlarmsIfNeeded()
+                setAlarmsIfNeeded(true)
             }
         builder.create().show()
     }
@@ -164,14 +139,14 @@ class MainActivity : AppCompatActivity() {
                 today.set(Calendar.HOUR_OF_DAY, selectedHour)
                 today.set(Calendar.MINUTE, selectedMinute)
 
-                Timber.d("Time alarm selected")
                 alarmPreference.setAlarmState(ALARM_SPECIFIC_TIME)
                     .setAlarmTriggerMillis(today.timeInMillis)
                     .commit()
 
                 rb_trigger_specific_time.text = getString(R.string.trigger_specific_time,
                     TimeUtils.getTimeToDisplay(alarmPreference.getAlarmTriggerMillis()))
-                setAlarmsIfNeeded()
+                Timber.d("Time alarm selected. Time to trigger: ${TimeUtils.getTimeToDisplay(alarmPreference.getAlarmTriggerMillis())}")
+                setAlarmsIfNeeded(true)
             }, hour, minute, false)// true for 24 hour time
         timerDialog?.setTitle("")
         timerDialog?.show()
@@ -190,39 +165,19 @@ class MainActivity : AppCompatActivity() {
             rb_trigger_specific_time.isChecked = true
             rb_trigger_specific_time.text = getString(R.string.trigger_specific_time,
                 TimeUtils.getTimeToDisplay(alarmPreference.getAlarmTriggerMillis()))
-            setAlarmsIfNeeded()
+            setAlarmsIfNeeded(false)
         }
 
         if (ALARM_INTERVAL_BASED == alarmState) {
             rb_trigger_interval.isChecked = true
             val intervalMins = alarmPreference.getAlarmIntervalMins()
             rb_trigger_interval.text = getString(R.string.trigger_at_minutes, intervalMins)
-            setAlarmsIfNeeded()
+            setAlarmsIfNeeded(false)
         }
     }
 
-    private fun setAlarmsIfNeeded() {
-        val alarmState = alarmPreference.getAlarmState()
-        if (ALARM_DISABLED == alarmState) return
-
-        val calendar = Calendar.getInstance()
-        when (alarmState) {
-            ALARM_SPECIFIC_TIME -> {
-                val timeInMillis = alarmPreference.getAlarmTriggerMillis()
-                if (timeInMillis == 0L) return
-                calendar.timeInMillis = timeInMillis
-                AlarmUtils.setAlarmManager(this, "This is a test alarm notification",
-                    calendar, 120 * 1000, NOTIF_ID_SPECIFIC_TIME, false)
-            }
-
-            ALARM_INTERVAL_BASED -> {
-                val minutesInterval = alarmPreference.getAlarmIntervalMins()
-                if (minutesInterval == 0) return
-
-                AlarmUtils.setRepeatingAlarm(this, "This is a test alarm notification",
-                    calendar, minutesInterval * 60 * 1000L, NOTIF_ID_INTERVAL_TIME)
-            }
-        }
+    private fun setAlarmsIfNeeded(force: Boolean) {
+       AlarmUtils.setAlarmsIfNeeded(this, alarmPreference, force)
     }
 
     private fun openFeedbackMail() {
