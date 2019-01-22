@@ -1,4 +1,4 @@
-package com.example.alarmmanager
+package com.sehatapp.alarmmanager
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.example.alarmmanager", appContext.packageName)
+        assertEquals("com.sehatapp.alarmmanager", appContext.packageName)
     }
 }

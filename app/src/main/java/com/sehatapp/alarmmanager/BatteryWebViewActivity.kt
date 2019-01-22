@@ -1,4 +1,4 @@
-package com.example.alarmmanager
+package com.sehatapp.alarmmanager
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

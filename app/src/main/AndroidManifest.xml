@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.alarmmanager">
+          package="com.sehatapp.alarmmanager">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
@@ -8,12 +8,12 @@
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:name=".AlarmApplication"
+            android:name="com.sehatapp.alarmmanager.AlarmApplication"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
-                android:name=".MainActivity"
+                android:name="com.sehatapp.alarmmanager.MainActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,10 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".BatteryWebViewActivity"
+        <activity android:name="com.sehatapp.alarmmanager.BatteryWebViewActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
-        <receiver android:name=".AlarmReceiver"/>
-        <receiver android:name=".BootReceiver"
+        <receiver android:name="com.sehatapp.alarmmanager.AlarmReceiver"/>
+        <receiver android:name="com.sehatapp.alarmmanager.BootReceiver"
                   android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -34,8 +34,8 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
-        <provider android:authorities="${applicationId}.com.example.alarmmanager.provider"
-                  android:name=".provider.GenericFileProvider"
+        <provider android:authorities="${applicationId}.com.sehatapp.alarmmanager.provider"
+                  android:name="com.sehatapp.alarmmanager.provider.GenericFileProvider"
                   android:exported="false"
                   android:grantUriPermissions="true">
             <meta-data

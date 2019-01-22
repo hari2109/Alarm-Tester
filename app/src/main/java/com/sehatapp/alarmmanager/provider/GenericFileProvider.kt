@@ -1,4 +1,4 @@
-package com.example.alarmmanager.provider
+package com.sehatapp.alarmmanager.provider
 
 import android.support.v4.content.FileProvider
 

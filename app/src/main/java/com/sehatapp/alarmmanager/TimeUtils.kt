@@ -1,4 +1,4 @@
-package com.example.alarmmanager
+package com.sehatapp.alarmmanager
 
 import java.text.SimpleDateFormat
 import java.util.*

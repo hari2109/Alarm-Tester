@@ -29,7 +29,7 @@ android {
 
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.alarmmanager"
+        applicationId "com.sehatapp.alarmmanager"
         minSdkVersion 17
         targetSdkVersion 28
         versionCode 1

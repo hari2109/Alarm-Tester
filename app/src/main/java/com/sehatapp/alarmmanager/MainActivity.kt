@@ -1,4 +1,4 @@
-package com.example.alarmmanager
+package com.sehatapp.alarmmanager
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
