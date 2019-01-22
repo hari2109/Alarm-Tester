@@ -195,7 +195,7 @@ class MainActivity : AppCompatActivity() {
         if (!file.exists() || !file.canRead()) {
             return
         }
-        val uri = FileProvider.getUriForFile(this, applicationContext.packageName + ".com.example.alarmmanager.provider", file)
+        val uri = FileProvider.getUriForFile(this, applicationContext.packageName + ".com.sehatapp.alarmmanager.provider", file)
         logEmailIntent.putExtra(Intent.EXTRA_STREAM, uri)
         logEmailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
